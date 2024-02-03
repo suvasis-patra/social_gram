@@ -4,21 +4,18 @@ import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     username: {
-      tyep: String,
+      type: String,
       required: [true, "Enter username"],
       trim: true,
       lowercase: true,
     },
     email: {
       type: String,
-      required: [true, "Enter a valid email"],
-      lowercase: true,
-      unique: true,
-      trim: true,
+      required: true,
     },
     password: {
       type: String,
-      required: [true, "Enter a valid passowrd"],
+      required: true,
       unique: true,
       trim: true,
     },
@@ -27,7 +24,6 @@ const userSchema = new mongoose.Schema(
     },
     profileImage: {
       type: String, // cloudnary url
-      required: true,
     },
   },
   {

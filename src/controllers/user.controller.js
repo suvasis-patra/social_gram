@@ -1,8 +1,8 @@
-import { User } from "../models/user.model";
-import { options } from "../utils";
-import { ApiErrorResponse } from "../utils/ApiErrorResponse";
-import { ApiResponse } from "../utils/ApiResponse";
-import { validteSignupUser } from "../utils/types";
+import { User } from "../models/user.model.js";
+import { options } from "../utils/index.js";
+import { ApiErrorResponse } from "../utils/ApiErrorResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { validteSignupUser } from "../utils/types.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
@@ -16,13 +16,14 @@ const generateAccessAndRefreshToken = async (userId) => {
 const signupUser = async (req, res) => {
   try {
     const payload = req.body;
+    console.log(payload);
     const validateUser = validteSignupUser.safeParse(payload);
     if (!validateUser.success)
       throw new ApiErrorResponse(400, "Invalid input format");
-    const { username, password } = payload;
-    const existUser = await User.findOne({ $or: [{ username }, { password }] });
+    const { username, email, password } = payload;
+    const existUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existUser) throw new ApiErrorResponse(409, "User already exists");
-    const user = await User.create({ username, password });
+    const user = await User.create({ username, password, email });
     return res
       .status(200)
       .send(new ApiResponse(200, { user }, "usercreated successfully"));
