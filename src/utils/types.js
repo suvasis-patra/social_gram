@@ -5,3 +5,8 @@ export const validteSignupUser = zod.object({
   email: zod.string().email().min(8).max(30),
   password: zod.string().min(2).max(30),
 });
+
+export const validateLoginUser = zod.object({
+  username: zod.string().min(2).max(30),
+  password: zod.string().min(2).max(30),
+});

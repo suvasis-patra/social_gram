@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { options } from "../utils/index.js";
 import { ApiErrorResponse } from "../utils/ApiErrorResponse.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { validteSignupUser } from "../utils/types.js";
+import { validateLoginUser, validteSignupUser } from "../utils/types.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
@@ -32,9 +32,10 @@ const signupUser = async (req, res) => {
   }
 };
 
-const signinUser = async () => {
+const signinUser = async (req, res) => {
   const payload = req.body;
-  const validateUser = validteSignupUser.safeParse(payload);
+  console.log(payload);
+  const validateUser = validateLoginUser.safeParse(payload);
   if (!validateUser.success)
     throw new ApiErrorResponse(400, "Invalid input format");
   const { username, password } = payload;

@@ -37,7 +37,7 @@ userSchema.pre("save", async function encryptPassword(next) {
   next();
 });
 
-userSchema.generateAccessToken = function () {
+userSchema.methods.generateAccessToken = function () {
   return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
   });
