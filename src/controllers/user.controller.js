@@ -5,12 +5,17 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { validateLoginUser, validteSignupUser } from "../utils/types.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
-  const user = await User.findById(userId);
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
-  return { accessToken, refreshToken };
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    // console.log(`accessToken:${accessToken},refreshToken: ${refreshToken}`);
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    return { accessToken, refreshToken };
+  } catch (error) {
+    console.log("something went wrong while generating token");
+  }
 };
 
 const signupUser = async (req, res) => {
@@ -44,7 +49,7 @@ const signinUser = async (req, res) => {
   const checkPassword = findUser.isPasswordCorrect(password);
   if (!checkPassword)
     throw new ApiErrorResponse(403, "Incorrect username or password");
-  const { accessToken, refreshToken } = generateAccessAndRefreshToken(
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     findUser?._id
   );
   const loggedInUser = await User.findById(findUser?._id).select(
